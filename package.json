@@ -1,0 +1,28 @@
+{
+  "name": "elearning-platform",
+  "version": "1.0.0",
+  "description": "Full-stack E-Learning Platform with React, Node.js, MongoDB, and Razorpay",
+  "scripts": {
+    "install-all": "cd backend && npm install && cd ../frontend && npm install",
+    "start": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\"",
+    "dev": "npm run start"
+  },
+  "keywords": [
+    "elearning",
+    "education",
+    "react",
+    "nodejs",
+    "mongodb",
+    "razorpay"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "dependencies": {
+    "mongodb": "^6.20.0"
+  }
+}
+
+

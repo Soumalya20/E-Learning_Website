@@ -1,0 +1,105 @@
+================================================================
+  E-LEARNING PLATFORM - QUICK START GUIDE
+================================================================
+
+⚠️  MANDATORY: Install Node.js First!
+================================================================
+
+1. DOWNLOAD NODE.JS:
+   → Go to: https://nodejs.org/
+   → Click "Download LTS" button
+   → Run the installer
+   → Keep all default settings (CHECK "Add to PATH")
+   → Restart your computer
+
+2. VERIFY INSTALLATION:
+   Open PowerShell and type:
+   node --version
+   npm --version
+   
+   You should see version numbers. If not, Node.js didn't install correctly.
+
+================================================================
+3. START MONGODB
+================================================================
+
+You have 2 options:
+
+OPTION A - MongoDB Atlas (Cloud, Easier):
+→ Go to: https://www.mongodb.com/cloud/atlas
+→ Sign up (free)
+→ Create free cluster
+→ Click "Connect"
+→ Copy connection string
+→ Update backend/.env with the connection string
+
+OPTION B - MongoDB Local:
+→ Download from: https://www.mongodb.com/try/download/community
+→ Install it
+→ MongoDB runs automatically
+
+================================================================
+4. INSTALL AND RUN THE APPLICATION
+================================================================
+
+Open PowerShell and run these commands ONE BY ONE:
+
+--------------------------------------------------
+COMMAND 1: Install Backend
+--------------------------------------------------
+cd "C:\E-Learning site\backend"
+npm install
+
+Wait for installation to complete (2-3 minutes)
+
+--------------------------------------------------
+COMMAND 2: Install Frontend  
+--------------------------------------------------
+cd "C:\E-Learning site\frontend"
+npm install
+
+Wait for installation to complete (2-3 minutes)
+
+--------------------------------------------------
+COMMAND 3: Start MongoDB (if using local)
+--------------------------------------------------
+Start MongoDB service (or skip if using Atlas)
+
+--------------------------------------------------
+COMMAND 4: Start Backend Server
+--------------------------------------------------
+# Open a NEW terminal window
+cd "C:\E-Learning site\backend"
+npm run dev
+
+You should see:
+✅ Server running on port 5000
+✅ MongoDB Connected
+
+--------------------------------------------------
+COMMAND 5: Start Frontend Server
+--------------------------------------------------
+# Open ANOTHER NEW terminal window
+cd "C:\E-Learning site\frontend"
+npm start
+
+Your browser will open at: http://localhost:3000
+
+================================================================
+SUCCESS!
+================================================================
+
+The website is now running at: http://localhost:3000
+
+First steps:
+1. Click "Sign Up" to create an account
+2. Choose your role (Student or Instructor)
+3. Start exploring!
+
+================================================================
+
+
+
+
+
+
