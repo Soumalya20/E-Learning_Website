@@ -43,15 +43,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Registration now logs in immediately (no email verification)
   const signup = async (name, email, password, role) => {
-    try {
-      const res = await authAPI.signup(name, email, password, role);
-      localStorage.setItem('token', res.data.token);
-      setUser(res.data.user);
-      return res.data;
-    } catch (error) {
-      throw error;
-    }
+    const res = await authAPI.signup(name, email, password, role);
+    localStorage.setItem('token', res.data.token);
+    setUser(res.data.user);
+    return res.data;
   };
 
   const logout = () => {

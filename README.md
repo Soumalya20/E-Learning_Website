@@ -77,8 +77,8 @@ A full-stack E-Learning platform built with React.js, Node.js, Express, MongoDB,
    ```
 
 5. **Start MongoDB**
-   - Ensure MongoDB is running on your system
-   - Or configure MongoDB Atlas connection string in backend/.env
+   - Local: Start the MongoDB Windows service (Services app → MongoDB → Start) or run `mongod --dbpath %LOCALAPPDATA%\MongoDB\data`.
+   - Atlas: Replace `MONGODB_URI` with your Atlas connection string.
 
 6. **Run the Application**
 
@@ -127,6 +127,15 @@ e-learning-site/
 └── README.md
 ```
 
+## Common Tasks
+
+### Seed Sample Data
+From `backend/`:
+```bash
+npm run seed
+```
+This connects to `MONGODB_URI` and inserts sample courses if the DB is empty.
+
 ## API Endpoints
 
 ### Authentication
@@ -145,6 +154,11 @@ e-learning-site/
 - `POST /api/payments/create-order` - Create Razorpay order
 - `POST /api/payments/verify-payment` - Verify payment
 - `GET /api/payments/my-enrollments` - Get user enrollments
+
+## Shopping Cart
+- Add any paid course to cart from its detail page.
+- Cart persists in the browser via localStorage and shows an item count badge in the Navbar.
+- From `/cart`, remove items, clear cart, or checkout a course (uses your Razorpay flow and auto-enrolls on success).
 
 ### Users
 - `GET /api/users/profile` - Get user profile

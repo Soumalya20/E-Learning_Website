@@ -212,11 +212,44 @@ npm start
 - JWT 9.0
 - Razorpay 2.9
 - bcryptjs 2.4
+ - SendGrid Mail (optional, preferred)
+ - Nodemailer (SMTP/Ethereal fallback)
+
+## 🔧 Environment Configuration
+
+Backend `.env` keys:
+
+```
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/elearning
+JWT_SECRET=replace_with_long_random_string
+APP_NAME=Arisiumlearn
+APP_URL=http://localhost:3000
+MAIL_FROM=Arisiumlearn <no-reply@arisiumlearn.local>
+SUPPORT_EMAIL=support@example.com
+
+# Option A: SendGrid (recommended)
+# SENDGRID_API_KEY=SG.xxxxx
+
+# Option B: SMTP
+# SMTP_HOST=smtp.yourprovider.com
+# SMTP_PORT=587
+# SMTP_USER=your_user
+# SMTP_PASS=your_pass
+```
+
+Frontend `.env`:
+
+```
+REACT_APP_API_URL=http://localhost:5000/api
+```
 
 ## 🎯 API Endpoints
 
 ### Authentication
 - `POST /api/auth/register` - User registration
+- `POST /api/auth/verify-email` - Verify OTP and login
+- `POST /api/auth/resend-otp` - Resend verification code (rate-limited)
 - `POST /api/auth/login` - User login
 - `GET /api/auth/me` - Get current user
 

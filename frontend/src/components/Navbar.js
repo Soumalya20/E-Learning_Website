@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import { FaBars, FaTimes, FaUser, FaBook, FaSignOutAlt } from 'react-icons/fa';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { items: cartItems } = useCart();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = () => {
@@ -26,6 +28,12 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-8">
             <Link to="/" className="text-gray-700 hover:text-primary-600 transition">Home</Link>
             <Link to="/courses" className="text-gray-700 hover:text-primary-600 transition">Courses</Link>
+            <Link to="/cart" className="relative text-gray-700 hover:text-primary-600 transition">
+              Cart
+              {cartItems?.length ? (
+                <span className="absolute -top-2 -right-3 bg-primary-600 text-white text-xs rounded-full px-1.5">{cartItems.length}</span>
+              ) : null}
+            </Link>
             
             {user ? (
               <div className="flex items-center space-x-4">
@@ -69,6 +77,7 @@ const Navbar = () => {
             {user ? (
               <>
                 <Link to="/my-courses" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">My Courses</Link>
+                <Link to="/cart" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Cart{cartItems?.length ? ` (${cartItems.length})` : ''}</Link>
                 <Link to="/dashboard" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Dashboard</Link>
                 <Link to="/profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Profile</Link>
                 {user.role === 'instructor' && (

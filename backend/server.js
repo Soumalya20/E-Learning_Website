@@ -1,11 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const compression = require('compression');
 require('dotenv').config();
 
 const app = express();
 
 // Middleware
+app.use(compression()); // Gzip compression
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -13,6 +15,10 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/courses', require('./routes/courses'));
+app.use('/api/courses', require('./routes/reviews')); // Reviews nested under courses
+app.use('/api/progress', require('./routes/progress'));
+app.use('/api/instructor', require('./routes/instructor'));
+app.use('/api/admin', require('./routes/admin'));
 app.use('/api/payments', require('./routes/payments'));
 app.use('/api/users', require('./routes/users'));
 
