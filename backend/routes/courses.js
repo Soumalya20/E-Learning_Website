@@ -1,20 +1,112 @@
 const express = require('express');
 const router = express.Router();
+const { body, param } = require('express-validator');
 const Course = require('../models/Course');
 const auth = require('../middleware/auth');
+const handleValidationErrors = require('../middleware/validation');
+
+// Search and filter courses
+router.get('/search', async (req, res) => {
+  try {
+    const { q, category, level, rating, price, sort } = req.query;
+    
+    let query = {};
+
+    // Text search - try regex search (works without text index)
+    if (q) {
+      query.$or = [
+        { title: { $regex: q, $options: 'i' } },
+        { description: { $regex: q, $options: 'i' } }
+      ];
+    }
+
+    // Filter by category
+    if (category) {
+      query.category = category;
+    }
+
+    // Filter by level
+    if (level) {
+      query.level = level;
+    }
+
+    // Filter by rating
+    if (rating) {
+      const ratingNum = parseFloat(rating);
+      if (rating.includes('_above')) {
+        query.averageRating = { $gte: ratingNum };
+      } else {
+        query.averageRating = { $gte: ratingNum, $lt: ratingNum + 1 };
+      }
+    }
+
+    // Filter by price
+    if (price === 'free') {
+      query.price = 0;
+    } else if (price === 'paid') {
+      query.price = { $gt: 0 };
+    }
+
+    // Only show approved courses for public
+    if (!req.userId || req.userRole !== 'admin') {
+      query.status = 'approved';
+    }
+
+    let courses = Course.find(query).populate('instructor', 'name email');
+
+    // Sorting
+    if (sort === 'popular') {
+      courses = courses.sort({ studentsEnrolled: -1, averageRating: -1 });
+    } else if (sort === 'rating') {
+      courses = courses.sort({ averageRating: -1, totalRatings: -1 });
+    } else if (sort === 'newest') {
+      courses = courses.sort({ createdAt: -1 });
+    } else if (sort === 'price_low') {
+      courses = courses.sort({ price: 1 });
+    } else if (sort === 'price_high') {
+      courses = courses.sort({ price: -1 });
+    } else {
+      courses = courses.sort({ createdAt: -1 });
+    }
+
+    const results = await courses;
+
+    res.json(results || []);
+  } catch (error) {
+    console.error('Error in /courses/search:', error);
+    res.status(500).json({ 
+      message: error.message || 'Failed to fetch courses',
+      error: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
 
 // Get all courses
 router.get('/', async (req, res) => {
   try {
-    const courses = await Course.find().populate('instructor', 'name email');
-    res.json(courses);
+    let query = {};
+    
+    // Only show approved courses for public
+    if (!req.userId || req.userRole !== 'admin') {
+      query.status = 'approved';
+    }
+
+    const courses = await Course.find(query).populate('instructor', 'name email').sort({ createdAt: -1 });
+    res.json(courses || []);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Error in GET /courses:', error);
+    res.status(500).json({ 
+      message: error.message || 'Failed to fetch courses',
+      error: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 
 // Get single course
-router.get('/:id', async (req, res) => {
+router.get('/:id',
+  param('id').isMongoId().withMessage('Invalid course ID'),
+  handleValidationErrors,
+  async (req, res) => {
   try {
     const course = await Course.findById(req.params.id).populate('instructor', 'name email');
     if (!course) {
@@ -27,25 +119,51 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create course (instructor only)
-router.post('/', auth, async (req, res) => {
-  try {
-    if (req.userRole !== 'instructor' && req.userRole !== 'admin') {
-      return res.status(403).json({ message: 'Access denied' });
-    }
+router.post('/',
+  auth,
+  [
+    body('title').trim().isLength({ min: 5, max: 200 }).withMessage('Title must be between 5 and 200 characters'),
+    body('description').trim().isLength({ min: 20 }).withMessage('Description must be at least 20 characters'),
+    body('price').isFloat({ min: 0 }).withMessage('Price must be a positive number'),
+    body('category').trim().notEmpty().withMessage('Category is required'),
+    body('level').optional().isIn(['Beginner', 'Intermediate', 'Advanced', 'All Levels']).withMessage('Invalid level'),
+    body('language').optional().trim().isLength({ min: 2 }).withMessage('Language must be at least 2 characters'),
+    body('whatYouWillLearn').optional().isArray().withMessage('whatYouWillLearn must be an array'),
+    body('requirements').optional().isArray().withMessage('requirements must be an array'),
+    body('modules').optional().isArray().withMessage('modules must be an array')
+  ],
+  handleValidationErrors,
+  async (req, res) => {
+    try {
+      if (req.userRole !== 'instructor' && req.userRole !== 'admin') {
+        return res.status(403).json({ message: 'Access denied' });
+      }
 
-    const course = new Course({
-      ...req.body,
-      instructor: req.userId
-    });
-    await course.save();
-    res.status(201).json(course);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+      const course = new Course({
+        ...req.body,
+        instructor: req.userId,
+        status: 'draft' // New courses start as draft
+      });
+      await course.save();
+      res.status(201).json(course);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
   }
-});
+);
 
 // Update course
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id',
+  auth,
+  [
+    param('id').isMongoId().withMessage('Invalid course ID'),
+    body('title').optional().trim().isLength({ min: 5, max: 200 }).withMessage('Title must be between 5 and 200 characters'),
+    body('description').optional().trim().isLength({ min: 20 }).withMessage('Description must be at least 20 characters'),
+    body('price').optional().isFloat({ min: 0 }).withMessage('Price must be a positive number'),
+    body('level').optional().isIn(['Beginner', 'Intermediate', 'Advanced', 'All Levels']).withMessage('Invalid level')
+  ],
+  handleValidationErrors,
+  async (req, res) => {
   try {
     const course = await Course.findById(req.params.id);
     if (!course) {

@@ -1,11 +1,41 @@
 const mongoose = require('mongoose');
 
-const chapterSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  videoUrl: String,
-  duration: String,
-  order: Number
+// Lesson schema within a module
+const lessonSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true
+  },
+  type: {
+    type: String,
+    enum: ['Video', 'Article', 'Quiz'],
+    required: true
+  },
+  content: {
+    type: String,
+    required: true
+  },
+  duration: {
+    type: Number,
+    default: 0
+  },
+  order: {
+    type: Number,
+    default: 0
+  }
+});
+
+// Module schema containing lessons
+const moduleSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true
+  },
+  lessons: [lessonSchema],
+  order: {
+    type: Number,
+    default: 0
+  }
 });
 
 const courseSchema = new mongoose.Schema({
@@ -34,6 +64,43 @@ const courseSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  level: {
+    type: String,
+    enum: ['Beginner', 'Intermediate', 'Advanced', 'All Levels'],
+    default: 'Beginner'
+  },
+  language: {
+    type: String,
+    default: 'English'
+  },
+  whatYouWillLearn: {
+    type: [String],
+    default: []
+  },
+  requirements: {
+    type: [String],
+    default: []
+  },
+  modules: [moduleSchema],
+  // Keep old chapters for backward compatibility (deprecated)
+  chapters: [{
+    title: String,
+    description: String,
+    videoUrl: String,
+    duration: String,
+    order: Number
+  }],
+  averageRating: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 5
+  },
+  totalRatings: {
+    type: Number,
+    default: 0
+  },
+  // Legacy fields (kept for backward compatibility)
   rating: {
     type: Number,
     default: 0
@@ -46,22 +113,15 @@ const courseSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  chapters: [chapterSchema],
   duration: {
     type: String,
     default: '0 hours'
   },
-  language: {
+  status: {
     type: String,
-    default: 'English'
+    enum: ['draft', 'pending', 'approved', 'rejected'],
+    default: 'draft'
   },
-  level: {
-    type: String,
-    enum: ['Beginner', 'Intermediate', 'Advanced'],
-    default: 'Beginner'
-  },
-  requirements: [String],
-  whatYouWillLearn: [String],
   createdAt: {
     type: Date,
     default: Date.now
@@ -71,6 +131,9 @@ const courseSchema = new mongoose.Schema({
     default: Date.now
   }
 });
+
+// Text index for search
+courseSchema.index({ title: 'text', description: 'text', category: 'text' });
 
 module.exports = mongoose.model('Course', courseSchema);
 

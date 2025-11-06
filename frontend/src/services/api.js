@@ -22,10 +22,33 @@ export const authAPI = {
 
 export const coursesAPI = {
   getAll: () => api.get('/courses'),
+  search: (params) => api.get('/courses/search', { params }),
   getById: (id) => api.get(`/courses/${id}`),
   create: (data) => api.post('/courses', data),
   update: (id, data) => api.put(`/courses/${id}`, data),
   delete: (id) => api.delete(`/courses/${id}`),
+};
+
+export const reviewsAPI = {
+  create: (courseId, rating, comment) => api.post(`/courses/${courseId}/reviews`, { rating, comment }),
+  getByCourse: (courseId) => api.get(`/courses/${courseId}/reviews`),
+};
+
+export const progressAPI = {
+  markComplete: (courseId, lessonId) => api.post('/progress/mark-complete', { courseId, lessonId }),
+  getProgress: (courseId) => api.get(`/progress/${courseId}`),
+};
+
+export const instructorAPI = {
+  getMyCourses: () => api.get('/instructor/my-courses'),
+  getAnalytics: () => api.get('/instructor/analytics'),
+};
+
+export const adminAPI = {
+  getAllUsers: () => api.get('/admin/users'),
+  updateUserRole: (id, role) => api.put(`/admin/user/${id}/role`, { role }),
+  getAllCourses: () => api.get('/admin/courses'),
+  updateCourseStatus: (id, status) => api.put(`/admin/course/${id}/status`, { status }),
 };
 
 export const paymentsAPI = {

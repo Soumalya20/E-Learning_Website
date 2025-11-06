@@ -207,9 +207,12 @@ async function seedDatabase() {
       }
     ];
 
+    // Ensure courses are publicly visible
+    const coursesToInsert = sampleCourses.map(c => ({ ...c, status: 'approved' }));
+
     // Insert courses
-    await Course.insertMany(sampleCourses);
-    console.log(`✅ Successfully added ${sampleCourses.length} courses to database`);
+    await Course.insertMany(coursesToInsert);
+    console.log(`✅ Successfully added ${coursesToInsert.length} courses to database`);
 
     process.exit(0);
   } catch (error) {
