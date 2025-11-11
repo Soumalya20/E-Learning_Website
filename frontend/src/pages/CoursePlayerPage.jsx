@@ -107,7 +107,7 @@ const CoursePlayerPage = () => {
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-surface flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Course not found</h2>
           <Link to="/courses" className="text-primary-600 hover:text-primary-700">
@@ -126,7 +126,7 @@ const CoursePlayerPage = () => {
   if (!hasModules && course.chapters && course.chapters.length > 0) {
     const currentChapter = course.chapters[activeModuleIndex];
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-surface">
         <div className="flex flex-col lg:flex-row">
           <div className="lg:w-2/3 bg-black">
             <div className="sticky top-0 bg-gray-900 p-4 lg:p-8">
@@ -179,7 +179,7 @@ const CoursePlayerPage = () => {
 
   if (!hasModules || !currentLesson) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-surface flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">No content available</h2>
           <Link to="/courses" className="text-primary-600 hover:text-primary-700">
@@ -229,7 +229,7 @@ const CoursePlayerPage = () => {
   }));
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-surface">
       {/* Top Bar */}
       <div className="bg-white border-b shadow-sm sticky top-0 z-10">
         <div className="flex items-center justify-between p-4">

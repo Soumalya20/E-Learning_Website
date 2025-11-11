@@ -40,7 +40,7 @@ const CoursePlayer = () => {
 
   if (!course || !course.chapters || course.chapters.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-surface flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">No content available</h2>
           <Link to="/courses" className="text-primary-600 hover:text-primary-700">
@@ -54,7 +54,7 @@ const CoursePlayer = () => {
   const currentChapter = course.chapters[activeChapter];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-surface">
       <div className="flex flex-col lg:flex-row">
         {/* Video Player Section */}
         <div className="lg:w-2/3 bg-black">

@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
-import { FaSearch, FaStar, FaUsers, FaArrowRight } from 'react-icons/fa';
+import { FaStar, FaUsers, FaArrowRight } from 'react-icons/fa';
 import { coursesAPI } from '../services/api';
 import { toast } from 'react-hot-toast';
 import Button from '../components/ui/Button';
 
 const HomePage = () => {
-  const [searchQuery, setSearchQuery] = useState('');
   const [featuredCourses, setFeaturedCourses] = useState([]);
   const navigate = useNavigate();
 
@@ -19,31 +18,32 @@ const HomePage = () => {
   const fetchFeaturedCourses = async () => {
     try {
       const res = await coursesAPI.getAll();
+      // Handle both array and object response
+      const coursesData = Array.isArray(res.data) ? res.data : (res.data?.data || res.data || []);
       // Get top rated or most enrolled courses
-      const sorted = res.data
+      const sorted = coursesData
         .sort((a, b) => (b.averageRating || b.rating || 0) - (a.averageRating || a.rating || 0))
         .slice(0, 6);
       setFeaturedCourses(sorted);
     } catch (error) {
-      console.error('Failed to fetch courses');
-    }
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/courses?q=${encodeURIComponent(searchQuery)}`);
+      console.error('Failed to fetch courses:', error);
+      setFeaturedCourses([]);
     }
   };
 
   const categories = [
-    { name: 'Web Development', icon: '💻', color: 'bg-blue-500' },
-    { name: 'Data Science', icon: '📊', color: 'bg-green-500' },
-    { name: 'Graphic Design', icon: '🎨', color: 'bg-purple-500' },
-    { name: 'Business', icon: '💼', color: 'bg-yellow-500' },
-    { name: 'Marketing', icon: '📈', color: 'bg-red-500' },
-    { name: 'Photography', icon: '📷', color: 'bg-pink-500' },
+    { name: 'Web Development', icon: '💻', color: 'bg-primary-500' },
+    { name: 'Data Science', icon: '📊', color: 'bg-accent-500' },
+    { name: 'Graphic Design', icon: '🎨', color: 'bg-primary-700' },
+    { name: 'Business', icon: '💼', color: 'bg-accent-600' },
+    { name: 'Marketing', icon: '📈', color: 'bg-primary-600' },
+    { name: 'Photography', icon: '📷', color: 'bg-accent-700' },
   ];
+
+  const carouselCourses = useMemo(() => {
+    if (!featuredCourses.length) return [];
+    return [...featuredCourses, ...featuredCourses];
+  }, [featuredCourses]);
 
   return (
     <>
@@ -57,85 +57,189 @@ const HomePage = () => {
       </Helmet>
       <div className="min-h-screen">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-primary-600 via-primary-700 to-blue-900 text-white py-20 md:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center"
-          >
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
-              Learn Without Limits
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto">
-              Start, switch, or advance your career with thousands of courses, professional certificates, and degrees from world-class instructors.
-            </p>
-            
-            {/* Search Bar */}
-            <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-8">
-              <div className="flex rounded-lg overflow-hidden shadow-2xl">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="What do you want to learn today?"
-                  className="flex-1 px-6 py-4 text-gray-900 text-lg focus:outline-none"
-                />
-                <button
-                  type="submit"
-                  className="bg-primary-800 px-8 py-4 hover:bg-primary-900 transition"
-                >
-                  <FaSearch className="text-2xl" />
-                </button>
-              </div>
-            </form>
+        <section className="relative bg-gradient-to-br from-white via-primary-50/30 to-white min-h-[calc(100vh-80px)] flex items-center overflow-hidden">
+          {/* Decorative background elements */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-primary-200/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent-200/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+          </div>
+          
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-8 md:py-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+              {/* Left Column - Headline and CTA */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, ease: "easeOut" }}
+                className="space-y-5"
+              >
+                <div className="space-y-4">
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight">
+                    <span className="block text-primary-700">Learn what AI can't</span>
+                    <span className="block text-gray-900 font-black">replace.</span>
+                    <span className="block text-primary-700">Master</span>
+                    <span className="block text-gray-900 font-black">what makes you</span>
+                    <span className="block text-gray-900 font-black">human.</span>
+                  </h1>
+                  
+                  <p className="text-base md:text-lg lg:text-xl text-gray-700 leading-relaxed max-w-2xl font-medium">
+                    We help you grow with AI, not against it. Gain the skills, confidence,
+                    and edge you need to thrive in an AI-powered world.
+                  </p>
+                </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={() => navigate('/courses')}
-                className="border-white text-white hover:bg-white hover:text-primary-600"
+                <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                  <Button 
+                    variant="primary" 
+                    size="lg" 
+                    className="group relative px-6 py-3 text-base font-semibold shadow-lg hover:shadow-2xl transform transition-all duration-300 hover:-translate-y-1 hover:scale-105 bg-primary-600 hover:bg-primary-700 flex items-center justify-center gap-2 rounded-xl" 
+                    onClick={() => navigate('/courses')}
+                  >
+                    <span>Explore Now</span>
+                    <FaArrowRight className="ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="px-6 py-3 text-base font-semibold border-2 border-primary-600 text-primary-700 hover:bg-primary-600 hover:text-white hover:border-primary-600 shadow-md hover:shadow-xl transform transition-all duration-300 hover:-translate-y-1 hover:scale-105 rounded-xl" 
+                    onClick={() => navigate('/about')}
+                  >
+                    Learn More
+                  </Button>
+                </div>
+
+                {/* Built for the Future Section */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  className="pt-4 space-y-2"
+                >
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Built for the Future</p>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-4 py-1.5 rounded-full text-xs font-semibold bg-blue-100 text-primary-700 border border-blue-200 shadow-sm hover:shadow-md transition-shadow duration-200">
+                      Live Sessions
+                    </span>
+                    <span className="px-4 py-1.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-800 border border-orange-200 shadow-sm hover:shadow-md transition-shadow duration-200">
+                      1-6 Month Internship
+                    </span>
+                    <span className="px-4 py-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200">
+                      Placement Support
+                    </span>
+                  </div>
+                </motion.div>
+              </motion.div>
+
+              {/* Right Column - Path to Growth Box */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+                className="relative"
               >
-                Explore Courses
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={() => navigate('/signup')}
-                className="border-white text-white hover:bg-white hover:text-primary-600"
-              >
-                Start Learning Free
-              </Button>
+                <div className="relative bg-gradient-to-br from-primary-600 via-primary-500 to-primary-400 rounded-3xl p-6 md:p-8 text-white shadow-2xl hover:shadow-3xl transition-shadow duration-300 overflow-hidden">
+                  {/* Decorative gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
+                  
+                  <div className="relative z-10">
+                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold mb-6 leading-tight">
+                      Your Path to Growth
+                    </h2>
+                    
+                    <div className="space-y-4 mb-6">
+                      {/* Step 1 */}
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 0.4 }}
+                        className="flex items-start gap-4 group"
+                      >
+                        <div className="flex-shrink-0 w-12 h-12 rounded-full bg-white/25 backdrop-blur-sm flex items-center justify-center text-xl font-bold text-white shadow-lg border-2 border-white/30 group-hover:bg-white/35 transition-colors duration-200">
+                          1
+                        </div>
+                        <div className="flex-1 pt-0.5">
+                          <h3 className="text-lg md:text-xl font-bold mb-1">Build</h3>
+                          <p className="text-white/95 text-sm md:text-base leading-relaxed">Skills that stay relevant with AI-powered foundation</p>
+                        </div>
+                      </motion.div>
+
+                      {/* Step 2 */}
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 0.5 }}
+                        className="flex items-start gap-4 group"
+                      >
+                        <div className="flex-shrink-0 w-12 h-12 rounded-full bg-white/25 backdrop-blur-sm flex items-center justify-center text-xl font-bold text-white shadow-lg border-2 border-white/30 group-hover:bg-white/35 transition-colors duration-200">
+                          2
+                        </div>
+                        <div className="flex-1 pt-0.5">
+                          <h3 className="text-lg md:text-xl font-bold mb-1">Create</h3>
+                          <p className="text-white/95 text-sm md:text-base leading-relaxed">Imagination meets AI assistance for your success</p>
+                        </div>
+                      </motion.div>
+
+                      {/* Step 3 */}
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 0.6 }}
+                        className="flex items-start gap-4 group"
+                      >
+                        <div className="flex-shrink-0 w-12 h-12 rounded-full bg-white/25 backdrop-blur-sm flex items-center justify-center text-xl font-bold text-white shadow-lg border-2 border-white/30 group-hover:bg-white/35 transition-colors duration-200">
+                          3
+                        </div>
+                        <div className="flex-1 pt-0.5">
+                          <h3 className="text-lg md:text-xl font-bold mb-1">Grow</h3>
+                          <p className="text-white/95 text-sm md:text-base leading-relaxed">Smart automation meets human insight</p>
+                        </div>
+                      </motion.div>
+                    </div>
+
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.7 }}
+                    >
+                      <Button 
+                        variant="secondary" 
+                        size="lg" 
+                        className="w-full bg-white text-primary-700 hover:bg-gray-50 font-bold text-base py-3 shadow-xl hover:shadow-2xl transform transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] rounded-xl border-0" 
+                        onClick={() => navigate('/contact')}
+                      >
+                        Book A Free Masterclass Now
+                      </Button>
+                    </motion.div>
+                  </div>
+                </div>
+              </motion.div>
             </div>
-          </motion.div>
-        </div>
-      </section>
+          </div>
+        </section>
 
       {/* Featured Courses Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900">Featured Courses</h2>
             <Link
               to="/courses"
-              className="text-primary-600 hover:text-primary-700 font-semibold flex items-center"
+              className="text-accent-600 hover:text-accent-700 font-semibold flex items-center"
             >
               View All <FaArrowRight className="ml-2" />
             </Link>
           </div>
           
-          <div className="overflow-x-auto pb-4">
-            <div className="flex space-x-6" style={{ minWidth: 'max-content' }}>
-              {featuredCourses.map((course, index) => (
+          <div className="auto-scroll-container pt-2 pb-6">
+            <div className="auto-scroll-track">
+              {carouselCourses.map((course, index) => (
                 <motion.div
-                  key={course._id || index}
+                  key={`${course._id || index}-${index}`}
                   initial={{ opacity: 0, x: 20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="flex-shrink-0 w-80 bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition"
+                  transition={{ duration: 0.5, delay: (index % (featuredCourses.length || 1)) * 0.1 }}
+                  className="flex-shrink-0 w-80 bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-transform duration-200 hover:scale-105"
                 >
                   <Link to={`/course/${course._id}`}>
                     <div className="relative h-48">
@@ -176,7 +280,7 @@ const HomePage = () => {
       </section>
 
       {/* Top Categories Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Top Categories</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
@@ -190,7 +294,7 @@ const HomePage = () => {
               >
                 <Link
                   to={`/courses?category=${encodeURIComponent(category.name)}`}
-                  className="block bg-white rounded-xl p-6 text-center hover:shadow-xl transition shadow-md"
+                  className="block bg-white rounded-xl p-6 text-center hover:shadow-xl transition-transform duration-200 hover:scale-105 shadow-md min-h-[200px] flex flex-col items-center justify-center"
                 >
                   <div className={`${category.color} w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-4`}>
                     {category.icon}
@@ -210,19 +314,14 @@ const HomePage = () => {
           <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
             Teach what you love. Arisiumlearn gives you the tools to create an online course.
           </p>
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={() => navigate('/signup?role=instructor')}
-            className="border-white text-white hover:bg-white hover:text-primary-600"
-          >
+          <Button variant="accent" size="lg" className="border border-accent-700 shadow-md hover:shadow-xl transform transition-transform duration-200 hover:-translate-y-0.5 hover:scale-105" onClick={() => navigate('/signup?role=instructor')}>
             Start Teaching Today
           </Button>
         </div>
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">What Our Students Say</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -252,7 +351,7 @@ const HomePage = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-gray-50 p-6 rounded-xl"
+                className="bg-white p-6 rounded-xl"
               >
                 <div className="flex mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
