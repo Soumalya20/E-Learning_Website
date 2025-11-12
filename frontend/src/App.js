@@ -9,6 +9,7 @@ import { Toaster } from 'react-hot-toast';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Lazy load pages for code splitting
 const Home = lazy(() => import('./pages/Home'));
@@ -42,12 +43,13 @@ function App() {
     <HelmetProvider>
       <AuthProvider>
         <CartProvider>
-        <Router>
-          <div className="min-h-screen flex flex-col">
-            <Navbar />
-            <main className="flex-grow">
-              <Suspense fallback={<LoadingSpinner />}>
-                <Routes>
+        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <ErrorBoundary>
+            <div className="min-h-screen flex flex-col">
+              <Navbar />
+              <main className="flex-grow">
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/home-old" element={<Home />} />
               <Route path="/courses" element={<CourseDiscoveryPage />} />
@@ -123,12 +125,36 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-                </Routes>
-              </Suspense>
-            </main>
-            <Footer />
-          </div>
-          <Toaster position="top-right" />
+                  </Routes>
+                </Suspense>
+              </main>
+              <Footer />
+            </div>
+            <Toaster 
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: '#363636',
+                  color: '#fff',
+                },
+                success: {
+                  duration: 3000,
+                  iconTheme: {
+                    primary: '#10b981',
+                    secondary: '#fff',
+                  },
+                },
+                error: {
+                  duration: 4000,
+                  iconTheme: {
+                    primary: '#ef4444',
+                    secondary: '#fff',
+                  },
+                },
+              }}
+            />
+          </ErrorBoundary>
         </Router>
         </CartProvider>
       </AuthProvider>

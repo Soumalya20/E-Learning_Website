@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { coursesAPI } from '../services/api';
 import { toast } from 'react-hot-toast';
@@ -40,16 +41,18 @@ const CourseDiscoveryPage = () => {
       setLoading(true);
       const params = { ...filters };
       Object.keys(params).forEach(key => {
-        if (!params[key]) delete params[key];
+        if (!params[key] || params[key] === '') delete params[key];
       });
       
       const res = await coursesAPI.search(params);
-      setCourses(res.data || []);
+      // Handle both array and object response
+      const coursesData = Array.isArray(res.data) ? res.data : (res.data?.data || res.data || []);
+      setCourses(coursesData);
     } catch (error) {
       console.error('Error fetching courses:', error);
       const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch courses';
       toast.error(errorMessage);
-      setCourses([]); // Set empty array on error
+      setCourses([]);
     } finally {
       setLoading(false);
     }
@@ -68,7 +71,24 @@ const CourseDiscoveryPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <>
+      <Helmet>
+        <title>
+          {`${filters.q || filters.category 
+            ? `Search Results${filters.q ? `: ${filters.q}` : ''}${filters.category ? ` - ${filters.category}` : ''}`
+            : 'Discover Courses'} | Arisiumlearn`}
+        </title>
+        <meta 
+          name="description" 
+          content={
+            filters.q || filters.category
+              ? `Find the best courses${filters.q ? ` about ${filters.q}` : ''}${filters.category ? ` in ${filters.category}` : ''}. Browse our collection of online courses and start learning today.`
+              : 'Discover thousands of online courses. Learn new skills, advance your career, and achieve your goals with expert-led courses.'
+          }
+        />
+        <meta name="keywords" content="online courses, e-learning, education, learn online, courses, training" />
+      </Helmet>
+      <div className="min-h-screen bg-surface py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Discover Courses</h1>
@@ -246,6 +266,10 @@ const CourseDiscoveryPage = () => {
                           src={course.thumbnail}
                           alt={course.title}
                           className="w-full h-full object-cover"
+                          loading="lazy"
+                          onError={(e) => {
+                            e.target.src = 'https://via.placeholder.com/400x300?text=Course+Image';
+                          }}
                         />
                       </div>
                       <div className="p-6">
@@ -291,7 +315,8 @@ const CourseDiscoveryPage = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

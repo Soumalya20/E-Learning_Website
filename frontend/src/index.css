@@ -12,6 +12,8 @@ body {
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f9fa;
+  color: #111827; /* Tailwind gray-900 */
 }
 
 ::-webkit-scrollbar {
@@ -42,6 +44,27 @@ body {
 .card-hover:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.auto-scroll-container {
+  overflow: hidden;
+  position: relative;
+}
+
+.auto-scroll-track {
+  display: flex;
+  gap: 1.5rem;
+  width: max-content;
+  animation: scroll-horizontal 45s linear infinite;
+}
+
+@keyframes scroll-horizontal {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 

@@ -21,10 +21,12 @@ const Courses = () => {
       // Try to fetch from API, fallback to mock data if fails
       try {
         const res = await coursesAPI.getAll();
-        let filteredCourses = res.data;
+        // Handle both array and object response
+        const coursesData = Array.isArray(res.data) ? res.data : (res.data?.data || res.data || []);
+        let filteredCourses = coursesData;
         
         if (category !== 'all') {
-          filteredCourses = res.data.filter(course => course.category === category);
+          filteredCourses = coursesData.filter(course => course.category === category);
         }
         
         if (filteredCourses.length > 0) {
@@ -32,7 +34,7 @@ const Courses = () => {
           return;
         }
       } catch (error) {
-        console.log('API not available, using mock data');
+        console.log('API not available, using mock data:', error);
       }
       
       // Use mock data if API fails or returns no data
@@ -51,7 +53,7 @@ const Courses = () => {
   const categories = ['all', 'Web Development', 'Data Science', 'Graphic Design', 'Business', 'Marketing'];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-surface py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -70,7 +72,7 @@ const Courses = () => {
               onClick={() => setCategory(cat)}
               className={`px-6 py-2 rounded-lg font-semibold transition ${
                 category === cat
-                  ? 'bg-primary-600 text-white'
+                  ? 'bg-accent-600 text-white'
                   : 'bg-white text-gray-700 hover:bg-gray-100'
               }`}
             >
@@ -130,7 +132,7 @@ const Courses = () => {
                       <span className="text-2xl font-bold text-primary-600">
                         ₹{course.price}
                       </span>
-                      <button className="text-primary-600 font-semibold hover:text-primary-700">
+                      <button className="text-accent-600 font-semibold hover:text-accent-700">
                         View Course →
                       </button>
                     </div>

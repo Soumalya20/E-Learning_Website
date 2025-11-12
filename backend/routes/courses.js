@@ -13,30 +13,36 @@ router.get('/search', async (req, res) => {
     let query = {};
 
     // Text search - try regex search (works without text index)
-    if (q) {
+    if (q && q.trim()) {
       query.$or = [
-        { title: { $regex: q, $options: 'i' } },
-        { description: { $regex: q, $options: 'i' } }
+        { title: { $regex: q.trim(), $options: 'i' } },
+        { description: { $regex: q.trim(), $options: 'i' } }
       ];
     }
 
     // Filter by category
-    if (category) {
-      query.category = category;
+    if (category && category.trim()) {
+      query.category = category.trim();
     }
 
     // Filter by level
-    if (level) {
-      query.level = level;
+    if (level && level.trim() && level !== 'All Levels') {
+      query.level = level.trim();
     }
 
     // Filter by rating
-    if (rating) {
-      const ratingNum = parseFloat(rating);
-      if (rating.includes('_above')) {
-        query.averageRating = { $gte: ratingNum };
+    if (rating && rating.trim()) {
+      const ratingStr = rating.trim();
+      if (ratingStr.includes('_above')) {
+        const ratingNum = parseFloat(ratingStr.replace('_above', ''));
+        if (!isNaN(ratingNum)) {
+          query.averageRating = { $gte: ratingNum };
+        }
       } else {
-        query.averageRating = { $gte: ratingNum, $lt: ratingNum + 1 };
+        const ratingNum = parseFloat(ratingStr);
+        if (!isNaN(ratingNum)) {
+          query.averageRating = { $gte: ratingNum, $lt: ratingNum + 1 };
+        }
       }
     }
 
@@ -47,29 +53,29 @@ router.get('/search', async (req, res) => {
       query.price = { $gt: 0 };
     }
 
-    // Only show approved courses for public
+    // Only show approved courses for public (or show all if admin)
     if (!req.userId || req.userRole !== 'admin') {
       query.status = 'approved';
     }
 
-    let courses = Course.find(query).populate('instructor', 'name email');
+    let coursesQuery = Course.find(query).populate('instructor', 'name email');
 
     // Sorting
     if (sort === 'popular') {
-      courses = courses.sort({ studentsEnrolled: -1, averageRating: -1 });
+      coursesQuery = coursesQuery.sort({ studentsEnrolled: -1, averageRating: -1 });
     } else if (sort === 'rating') {
-      courses = courses.sort({ averageRating: -1, totalRatings: -1 });
+      coursesQuery = coursesQuery.sort({ averageRating: -1, totalRatings: -1 });
     } else if (sort === 'newest') {
-      courses = courses.sort({ createdAt: -1 });
+      coursesQuery = coursesQuery.sort({ createdAt: -1 });
     } else if (sort === 'price_low') {
-      courses = courses.sort({ price: 1 });
+      coursesQuery = coursesQuery.sort({ price: 1 });
     } else if (sort === 'price_high') {
-      courses = courses.sort({ price: -1 });
+      coursesQuery = coursesQuery.sort({ price: -1 });
     } else {
-      courses = courses.sort({ createdAt: -1 });
+      coursesQuery = coursesQuery.sort({ createdAt: -1 });
     }
 
-    const results = await courses;
+    const results = await coursesQuery;
 
     res.json(results || []);
   } catch (error) {

@@ -25,7 +25,7 @@ const Home = () => {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-50 to-blue-100 py-20">
+      <section className="bg-gradient-to-br from-surface to-primary-50 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -42,13 +42,13 @@ const Home = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/courses"
-                className="bg-primary-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-primary-700 transition shadow-lg hover:shadow-xl inline-flex items-center justify-center"
+                className="bg-accent-600 text-white px-8 py-4 rounded-lg text-lg font-semibold border border-accent-700 shadow-md hover:shadow-xl hover:bg-accent-700 transform transition-transform duration-200 hover:-translate-y-0.5 hover:scale-105 inline-flex items-center justify-center"
               >
                 Browse Courses
               </Link>
               <Link
                 to="/signup"
-                className="bg-white text-primary-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-50 transition shadow-lg hover:shadow-xl inline-flex items-center justify-center"
+                className="bg-accent-600 text-white px-8 py-4 rounded-lg text-lg font-semibold border border-accent-700 shadow-md hover:shadow-xl hover:bg-accent-700 transform transition-transform duration-200 hover:-translate-y-0.5 hover:scale-105 inline-flex items-center justify-center"
               >
                 Start Learning
               </Link>
@@ -58,7 +58,7 @@ const Home = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0 }}
@@ -105,7 +105,7 @@ const Home = () => {
             <p className="text-xl mb-8">Join thousands of students and start your journey today</p>
             <Link
               to="/signup"
-              className="bg-white text-primary-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition shadow-lg inline-flex items-center"
+              className="bg-accent-600 text-white px-8 py-4 rounded-lg text-lg font-semibold border border-accent-700 shadow-md hover:shadow-xl hover:bg-accent-700 transform transition-transform duration-200 hover:-translate-y-0.5 hover:scale-105 inline-flex items-center justify-center"
             >
               Get Started Now
             </Link>
