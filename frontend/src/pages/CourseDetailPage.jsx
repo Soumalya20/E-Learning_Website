@@ -125,7 +125,7 @@ const CourseDetailPage = () => {
           email: user.email
         },
         theme: {
-          color: '#0ea5e9'
+          color: '#2596be'
         }
       };
 
@@ -362,29 +362,65 @@ const CourseDetailPage = () => {
   return (
     <>
       <Helmet>
-        <title>{course.title} | Arisiumlearn</title>
-        <meta name="description" content={course.description?.substring(0, 160)} />
-        <meta name="keywords" content={`${course.title}, ${course.category}, online course, ${course.level}`} />
-        <meta property="og:title" content={course.title} />
-        <meta property="og:description" content={course.description?.substring(0, 160)} />
+        <title>{course?.title || 'Course'} | Arisiumlearn</title>
+        <meta name="description" content={course.description?.substring(0, 160) || `${course.title} - Learn ${course.category} online with expert instructors`} />
+        <meta name="keywords" content={`${course.title}, ${course.category}, online course, ${course.level}, e-learning, education`} />
+        <meta property="og:title" content={`${course.title} | Arisiumlearn`} />
+        <meta property="og:description" content={course.description?.substring(0, 160) || `${course.title} - Learn ${course.category} online`} />
         <meta property="og:image" content={course.thumbnail} />
         <meta property="og:type" content="website" />
+        <meta property="og:url" content={`https://arisiumlearn.com/course/${course._id}`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${course.title} | Arisiumlearn`} />
+        <meta name="twitter:description" content={course.description?.substring(0, 160) || `${course.title} - Learn ${course.category} online`} />
+        <meta name="twitter:image" content={course.thumbnail} />
+        <link rel="canonical" href={`https://arisiumlearn.com/course/${course._id}`} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Course",
+            "name": course.title,
+            "description": course.description,
+            "provider": {
+              "@type": "Organization",
+              "name": "Arisiumlearn",
+              "url": "https://arisiumlearn.com"
+            },
+            "instructor": {
+              "@type": "Person",
+              "name": course.instructor?.name || "Instructor"
+            },
+            ...(course.averageRating && {
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": course.averageRating,
+                "ratingCount": course.totalRatings || 0
+              }
+            }),
+            "offers": {
+              "@type": "Offer",
+              "price": course.price || 0,
+              "priceCurrency": "INR"
+            },
+            "image": course.thumbnail
+          })
+        }} />
       </Helmet>
-      <article className="min-h-screen bg-gray-50">
+      <article className="min-h-screen bg-surface">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-gray-900 to-gray-800 text-white py-12">
+        <section className="bg-gradient-to-br from-primary-700 to-primary-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">{course.title}</h1>
-              <p className="text-xl text-gray-300 mb-6">{course.description?.substring(0, 150)}...</p>
+              <p className="text-xl text-gray-200 mb-6">{course.description?.substring(0, 150)}...</p>
               <div className="flex items-center space-x-6 mb-4">
                 <div className="flex items-center">
                   <FaStar className="text-yellow-400 mr-2" />
                   <span className="font-semibold">
                     {(course.averageRating || course.rating || 0).toFixed(1)}
                   </span>
-                  <span className="text-gray-300 ml-2">
+                  <span className="text-gray-200 ml-2">
                     ({(course.totalRatings || course.numReviews || 0)})
                   </span>
                 </div>
@@ -393,7 +429,7 @@ const CourseDetailPage = () => {
                   <span>{course.studentsEnrolled || 0} students</span>
                 </div>
               </div>
-              <p className="text-gray-300">
+              <p className="text-gray-200">
                 Created by <span className="font-semibold">{course.instructor?.name || 'Instructor'}</span>
               </p>
             </div>
@@ -440,7 +476,7 @@ const CourseDetailPage = () => {
                   </div>
 
                   <Button
-                    variant="primary"
+                    variant="accent"
                     size="lg"
                     className="w-full mb-4"
                     onClick={handleEnroll}
@@ -450,7 +486,7 @@ const CourseDetailPage = () => {
 
                   {course.price > 0 && (
                     <Button
-                      variant="outline"
+                      variant="primary"
                       size="lg"
                       className="w-full mb-4"
                       onClick={() => {

@@ -4,7 +4,7 @@ import { FaBook, FaFacebook, FaTwitter, FaLinkedin, FaInstagram } from 'react-ic
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-white mt-20">
+    <footer className="bg-primary-900 text-white mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-2">
@@ -16,52 +16,52 @@ const Footer = () => {
               Your trusted partner in online education. Learn at your own pace, anywhere, anytime.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition" aria-label="Facebook">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-accent-500 transition" aria-label="Facebook">
                 <FaFacebook size={20} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition" aria-label="Twitter">
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-accent-500 transition" aria-label="Twitter">
                 <FaTwitter size={20} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition" aria-label="LinkedIn">
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-accent-500 transition" aria-label="LinkedIn">
                 <FaLinkedin size={20} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition" aria-label="Instagram">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-accent-500 transition" aria-label="Instagram">
                 <FaInstagram size={20} />
               </a>
             </div>
           </div>
           
           <div>
-            <h3 className="font-semibold mb-4">For Students</h3>
+            <h3 className="font-semibold mb-4 text-accent-500">For Students</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/courses" className="text-gray-400 hover:text-white transition">Browse Courses</Link></li>
-              <li><Link to="/signup" className="text-gray-400 hover:text-white transition">Sign Up</Link></li>
-              <li><Link to="/about" className="text-gray-400 hover:text-white transition">About Us</Link></li>
-              <li><Link to="/contact" className="text-gray-400 hover:text-white transition">Contact</Link></li>
+              <li><Link to="/courses" className="text-gray-400 hover:text-accent-500 transition">Browse Courses</Link></li>
+              <li><Link to="/signup" className="text-gray-400 hover:text-accent-500 transition">Sign Up</Link></li>
+              <li><Link to="/about" className="text-gray-400 hover:text-accent-500 transition">About Us</Link></li>
+              <li><Link to="/contact" className="text-gray-400 hover:text-accent-500 transition">Contact</Link></li>
             </ul>
           </div>
           
           <div>
-            <h3 className="font-semibold mb-4">For Instructors</h3>
+            <h3 className="font-semibold mb-4 text-accent-500">For Instructors</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/signup?role=instructor" className="text-gray-400 hover:text-white transition">Teach on Arisiumlearn</Link></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition">Instructor Resources</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition">Blog</a></li>
+              <li><Link to="/signup?role=instructor" className="text-gray-400 hover:text-accent-500 transition">Teach on Arisiumlearn</Link></li>
+              <li><Link to="/about" className="text-gray-400 hover:text-accent-500 transition">Instructor Resources</Link></li>
+              <li><Link to="/about" className="text-gray-400 hover:text-accent-500 transition">Blog</Link></li>
             </ul>
           </div>
           
           <div>
-            <h3 className="font-semibold mb-4">Legal</h3>
+            <h3 className="font-semibold mb-4 text-accent-500">Legal</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="text-gray-400 hover:text-white transition">Terms of Service</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition">Privacy Policy</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition">Cookie Policy</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition">Refund Policy</a></li>
+              <li><Link to="/terms" className="text-gray-400 hover:text-accent-500 transition">Terms of Service</Link></li>
+              <li><Link to="/privacy" className="text-gray-400 hover:text-accent-500 transition">Privacy Policy</Link></li>
+              <li><Link to="/cookies" className="text-gray-400 hover:text-accent-500 transition">Cookie Policy</Link></li>
+              <li><Link to="/refunds" className="text-gray-400 hover:text-accent-500 transition">Refund Policy</Link></li>
             </ul>
           </div>
         </div>
         
-        <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
+        <div className="border-t border-primary-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
           <p>&copy; 2025 Arisiumlearn. All rights reserved.</p>
           <p className="mt-2 md:mt-0">Made with ❤️ for learners worldwide</p>
         </div>

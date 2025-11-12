@@ -6,18 +6,34 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Brand primary (blue): #2596be core
         primary: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
-        }
+          50: '#eff8fc',
+          100: '#d8eef7',
+          200: '#b6def0',
+          300: '#86c8e4',
+          400: '#59b1d3',
+          500: '#2596be',
+          600: '#1f86ab',
+          700: '#1b7697',
+          800: '#175f79',
+          900: '#124a5f',
+        },
+        // Brand accent (orange): #ff9d28 core
+        accent: {
+          50: '#fff7ec',
+          100: '#ffe9cc',
+          200: '#ffd39a',
+          300: '#ffbd68',
+          400: '#ffa63e',
+          500: '#ff9d28',
+          600: '#e68d24',
+          700: '#cc7d20',
+          800: '#a5641a',
+          900: '#804e14',
+        },
+        // Brand surface (near-white): #f8f9fa
+        surface: '#f8f9fa',
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in',
